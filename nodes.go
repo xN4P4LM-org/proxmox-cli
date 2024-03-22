@@ -67,9 +67,9 @@ type vmCount struct {
 
 func getLeastUsedNode() ProxmoxNode {
 	allNodes := []vmCount{}
-	canidateNodes := []vmCount{}
+	candidateNodes := []vmCount{}
 
-	leastNumberOfVMs := 0
+	vmcount := []int{}
 
 Loop:
 	for _, node := range nodes {
@@ -84,32 +84,30 @@ Loop:
 			node:    node,
 		})
 
-		if leastNumberOfVMs == 0 || len(node.VirtualMachines) < leastNumberOfVMs {
-			leastNumberOfVMs = len(node.VirtualMachines)
-		}
+		vmcount = append(vmcount, len(node.VirtualMachines))
 	}
 
-	// filter out nodes with the least number of VMs
-	for index, vm := range allNodes {
-		// if the node has more VMs than the least number of VMs, remove it
-		if vm.vmCount > leastNumberOfVMs {
-			continue
+	// get the minimum numbe from the list
+	sort.Ints(vmcount)
+
+	for _, node := range allNodes {
+		if node.vmCount == vmcount[0] {
+			candidateNodes = append(candidateNodes, node)
 		}
-		canidateNodes = append(canidateNodes, allNodes[index])
 	}
 
 	// if there are more than one node select a random one
-	if len(canidateNodes) > 1 {
-		return canidateNodes[rand.Intn(len(canidateNodes))].node
+	if len(candidateNodes) > 1 {
+		return candidateNodes[rand.Intn(len(candidateNodes))].node
 	}
 
 	// confirm there are possible nodes
-	if len(canidateNodes) == 0 {
+	if len(candidateNodes) == 0 {
 		logger.Fatal("No nodes available")
 	}
 
 	// return the only node
-	return canidateNodes[0].node
+	return candidateNodes[0].node
 }
 
 func getNodeByVMID(VMID uint64) ProxmoxNode {
