@@ -57,7 +57,7 @@ node1   0.00    9.24            3
 node2   0.00    17.35           2
 node3   0.00    33.73           0
 node4   0.00    2.74            4
-node5   0.00    2.14            3]
+node5   0.00    2.14            3
 ```
 
 - `clone` - Clones a VM from a template
