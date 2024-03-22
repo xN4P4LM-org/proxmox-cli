@@ -1,0 +1,18 @@
+{
+    "0": {
+        "enviroment": "default",
+        "vmid": "100"
+    },
+    "1": {
+        "enviroment":"dev",
+        "vmid": "200"
+    },
+    "2": {
+        "enviroment": "staging",
+        "vmid": "300"
+    },
+    "3": {
+        "enviroment": "prod",
+        "vmid": "400"
+    }
+}
