@@ -120,7 +120,9 @@ func cloneVM(params []string) {
 
 func cloneLocally(templateVM VirtualMachine, environment string, name string) uint64 {
 
-	intRange, parseErr := strconv.ParseInt(getEnvironment(environment), 10, 64)
+	calculatedVMID, parseErr := strconv.ParseUint(getEnvironment(environment), 10, 64)
+
+	maxRange := calculatedVMID + 100
 
 	if parseErr != nil {
 		logger.Fatal("Error parsing environment range")
@@ -129,14 +131,18 @@ func cloneLocally(templateVM VirtualMachine, environment string, name string) ui
 	//get the next available VM ID
 
 	for _, vm := range activeVMids {
-		if vm == uint64(intRange) {
-			intRange++
+		if vm == calculatedVMID {
+			calculatedVMID++
 		}
+	}
+
+	if calculatedVMID > maxRange {
+		logger.Fatal("No more VM IDs available")
 	}
 
 	cloneOptions := proxmox.VirtualMachineCloneOptions{
 		Full:  1,
-		NewID: int(intRange),
+		NewID: int(calculatedVMID),
 		Pool:  environment,
 		Name:  name,
 	}
@@ -163,8 +169,8 @@ func cloneLocally(templateVM VirtualMachine, environment string, name string) ui
 		}
 	}
 
-	logger.Print("Successfully cloned VM: ", name, " with ID: ", intRange, " from template: ", templateVM.Name)
-	return uint64(intRange)
+	logger.Print("Successfully cloned VM: ", name, " with ID: ", calculatedVMID, " from template: ", templateVM.Name)
+	return calculatedVMID
 }
 
 func migrateVM(vm VirtualMachine, targetNode ProxmoxNode) {
