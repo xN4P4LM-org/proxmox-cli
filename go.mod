@@ -2,7 +2,7 @@ module github.com/xn4p4lm-org/infrastructure/proxmox-cli
 
 go 1.19
 
-require github.com/luthermonson/go-proxmox v0.0.0-beta5
+require github.com/luthermonson/go-proxmox v0.0.0-beta6
 
 require (
 	github.com/buger/goterm v1.0.4 // indirect
